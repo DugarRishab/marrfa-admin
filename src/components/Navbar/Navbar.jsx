@@ -50,7 +50,7 @@ const Navbar = ({ user, login, logout }) => {
 			<BrandName></BrandName>
 			{user ? (
 				<Row align={'middle'}>
-					{/* <p>{user.name}</p> */}
+					<p>{user.name}</p>
 					<Button type="primary" color="error" onClick={handleLogout}>
 						Logout
 					</Button>
