@@ -1,0 +1,40 @@
+.navbar{
+	width: min(1400px, 100%);
+	position: fixed;
+	top: 0;
+	height: 60px;
+	/* background-color: cyan; */
+	/* border: 1px solid red; */
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 2rem;
+	/* border-bottom: 1px solid rgb(200, 200, 200, 0.4); */
+}
+.navbar .title{
+	/* padding: 1rem; */
+	font-size: 1.5rem;
+}
+.brand {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	gap: 0.25rem;
+}
+
+.brand img {
+	aspect-ratio: 1/1;
+	width: 1.5rem;
+}
+
+.brand .brand-name {
+	font-weight: 500;
+	font-size: 1.2rem;
+    color: white;
+}
+.brand .page-name{
+	font-weight: 500;
+	font-size: 1.2rem;
+	color: #46a29f;
+}

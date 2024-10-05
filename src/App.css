@@ -1,0 +1,20 @@
+#root {
+	/* max-width: 1280px; */
+	margin: 0 0;
+	padding: 0rem;
+	box-sizing: border-box;
+	/* text-align: center; */
+}
+* {
+	box-sizing: border-box;
+}
+.main {
+	/* border: 1px solid red; */
+	width: calc(100% - 300px);
+	margin: 60px 0 0 300px;
+}
+.sub-main{
+	width: 100%;
+	margin: 00px 0 0 0;
+	/* border: 1px solid blue; */
+}
