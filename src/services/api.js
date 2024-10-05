@@ -2,8 +2,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-	baseURL: "http://localhost:8000/api/v1",
-	// baseURL: "https://gtv.onrender.com/api/v1",
+	// baseURL: "http://localhost:8000/api/v1",
+	baseURL: "http://15.207.55.100/api/v1",
 	withCredentials: true,
 });
 
