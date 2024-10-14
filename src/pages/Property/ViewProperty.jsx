@@ -4,13 +4,15 @@ import { viewProperties } from "../../services/api";
 import { DeleteOutlined, EditOutlined, SlidersOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
-const actionArray = () => {
+const actionArray = (id) => {
 	return [
 		<Button key="edit-btn">
-			<EditOutlined />
+			<Link to={`/property/edit/${id}`}>
+				<EditOutlined />
+			</Link>
 		</Button>,
 		<Button key="delete-btn" danger>
-			<DeleteOutlined /> 
+			<DeleteOutlined />
 		</Button>,
 	];
 };
@@ -48,7 +50,7 @@ const ViewProperty = () => {
 				pagination={{ position: "bottom", align: "center" }}
 				dataSource={properties}
 				renderItem={(item, index) => (
-					<List.Item key={index} actions={actionArray()}>
+					<List.Item key={index} actions={actionArray(item._id)}>
 						<List.Item.Meta
 							avatar={
 								<img

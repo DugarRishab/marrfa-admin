@@ -1,6 +1,6 @@
 import { Button, Flex, Input, List, Segmented, Typography } from "antd";
 import React, { useState, useEffect } from "react";
-import { viewProperties } from "../../services/api";
+import { createProperty, viewProperties } from "../../services/api";
 import {
 	DeleteOutlined,
 	EditOutlined,
@@ -30,7 +30,7 @@ const UploadProperty = () => {
 			></Segmented>
 			<br /><br />
 			{
-				uploadOption === uploadOptions[1] && (<PropertyForm></PropertyForm>)
+				uploadOption === uploadOptions[1] && (<PropertyForm onSubmit={createProperty }></PropertyForm>)
 			}
 		</div>
 	);

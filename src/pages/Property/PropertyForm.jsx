@@ -19,6 +19,7 @@ import {
 	UploadOutlined,
 	PlusOutlined,
 	MinusCircleOutlined,
+	MinusCircleFilled,
 } from "@ant-design/icons";
 import { createProperty } from "../../services/api";
 // import jsonToFormData  from 'json-form-data';
@@ -28,61 +29,169 @@ import removeArrayIndicesFromImages from "../../utils/removeArrayIndicesFromImag
 
 const { TextArea } = Input;
 
-const PropertyForm = () => {
+const ImgBox = ({ imgs, removeImage }) => {
+	console.log(imgs);
+		
+	return (
+		<div
+			className="img-display"
+			style={{
+				display: "flex",
+				flexDirection: "row",
+				gap: "10px",
+				margin: "10px",
+			}}
+		>
+			{imgs.map((item, i) => (
+				<div
+					key={i}
+					className="img-box"
+					style={{
+						height: "200px",
+						padding: "10px",
+						border: "1px solid white",
+						position: "relative",
+					}}
+				>
+					<Button
+						style={{
+							position: "absolute",
+							top: "15px",
+							right: "15px",
+							color: "red",
+						}}
+						onClick={() => removeImage(item)}
+						icon={<MinusCircleFilled></MinusCircleFilled>}
+						// type={'secondary'}
+					></Button>
+
+					<img
+						style={{
+							// width: "200px",
+							height: "100%",
+						}}
+						src={item}
+					></img>
+				</div>
+			))}
+		</div>
+	);
+	
+};
+
+const PropertyForm = ({ property, onSubmit }) => {
 	// State variables for basic details
-	const [propertyName, setPropertyName] = useState();
-	const [propertyType, setPropertyType] = useState("");
-	const [occupancyStatus, setOccupancyStatus] = useState("");
+	const [propertyName, setPropertyName] = useState(property?.name || "");
+	const [propertyType, setPropertyType] = useState(property?.type || "");
+	const [occupancyStatus, setOccupancyStatus] = useState(
+		property?.occupancy || ""
+	);
 
 	// State variables for location
-	const [latitude, setLatitude] = useState();
-	const [longitude, setLongitude] = useState();
-	const [address, setAddress] = useState();
-	const [city, setCity] = useState();
-	const [district, setDistrict] = useState();
-	const [stateName, setStateName] = useState();
-	const [country, setCountry] = useState();
+	const [latitude, setLatitude] = useState(property?.location?.lat || null);
+	const [longitude, setLongitude] = useState(
+		property?.location?.long || null
+	);
+	const [address, setAddress] = useState(property?.location?.address || "");
+	const [city, setCity] = useState(property?.location?.city || "");
+	const [district, setDistrict] = useState(
+		property?.location?.district || ""
+	);
+	const [stateName, setStateName] = useState(property?.location?.state || "");
+	const [country, setCountry] = useState(property?.location?.country || "");
 
 	// State variables for amenities
-	const [amenities, setAmenities] = useState([]);
-	// const acc = ["a", "b", "c"];
+	const [amenities, setAmenities] = useState(
+		property?.location?.amenities || []
+	);
 
 	// State variables for features
-	const [featureAmenities, setFeatureAmenities] = useState([]);
-	const [renovations, setRenovations] = useState([]);
-	const [energyRating, setEnergyRating] = useState();
-	const [smartFeatures, setSmartFeatures] = useState([]);
+	const [featureAmenities, setFeatureAmenities] = useState(
+		property?.features?.amenities || []
+	);
+	const [renovations, setRenovations] = useState(
+		property?.features?.renovations || []
+	);
+	const [energyRating, setEnergyRating] = useState(
+		property?.features?.energyRating || ""
+	);
+	const [smartFeatures, setSmartFeatures] = useState(
+		property?.features?.smartFeatures || []
+	);
 
 	// State variables for last renovation
-	const [lastRenovationValue, setLastRenovationValue] = useState();
-	const [lastRenovationUnit, setLastRenovationUnit] = useState();
+	const [lastRenovationValue, setLastRenovationValue] = useState(
+		property?.lastRenovation?.value || null
+	);
+	const [lastRenovationUnit, setLastRenovationUnit] = useState(
+		property?.lastRenovation?.unit || ""
+	);
 
 	// State variables for listed by
-	const [listedByName, setListedByName] = useState();
-	const [listedByLink, setListedByLink] = useState();
-	const [contactMethods, setContactMethods] = useState([]);
+	const [listedByName, setListedByName] = useState(
+		property?.listedBy?.name || ""
+	);
+	const [listedByLink, setListedByLink] = useState(
+		property?.listedBy?.link || ""
+	);
+	const [contactMethods, setContactMethods] = useState(
+		property?.listedBy?.contact || []
+	);
 
 	// State variables for description
-	const [description, setDescription] = useState();
+	const [description, setDescription] = useState(property?.description || "");
 
 	// State variables for layout
-	const [propertySize, setPropertySize] = useState();
-	const [sizeUnit, setSizeUnit] = useState();
-	const [bedrooms, setBedrooms] = useState();
-	const [bathrooms, setBathrooms] = useState();
-	const [kitchens, setKitchens] = useState();
+	const [propertySize, setPropertySize] = useState(
+		property?.layout?.size?.value || null
+	);
+	const [sizeUnit, setSizeUnit] = useState(
+		property?.layout?.size?.unit || ""
+	);
+	const [bedrooms, setBedrooms] = useState(
+		property?.layout?.bedrooms || null
+	);
+	const [bathrooms, setBathrooms] = useState(
+		property?.layout?.bathrooms || null
+	);
+	const [kitchens, setKitchens] = useState(property?.layout?.kitchen || null);
 
 	// State variables for price
-	const [priceValue, setPriceValue] = useState();
-	const [priceUnit, setPriceUnit] = useState();
+	const [priceValue, setPriceValue] = useState(
+		property?.price?.value || null
+	);
+	const [priceUnit, setPriceUnit] = useState(property?.price?.unit || "");
 
 	// State variables for metadata
-	const [mlsNumber, setMlsNumber] = useState();
+	const [mlsNumber, setMlsNumber] = useState(property?.metadata?.mls || null);
 
 	// State to store uploaded files
 	const [heroImg, setHeroImg] = useState(null);
 	const [gallery, setGallery] = useState([]);
-	const [floorMap, setFloorMap] = useState([]);
+	const [floorMap, setFloorMap] = useState(null);
+
+	const
+		[galleryOld, setGalleryOld] = useState(
+		property?.images?.gallery || []
+		);
+	const [heroImgOld, setHeroImgOld] = useState(
+		property?.images?.heroImg 
+	);
+	const [floorMapOld, setFloorMapOld] = useState(
+		property?.images?.floorMap
+	);
+
+	const handleRemoveHeroImges = () => {
+		setHeroImgOld('');
+	}
+
+	const handleRemoveFloorMap = () => {
+		setFloorMapOld("");
+	};
+
+	const handleRemoveGalleryImages = (img) => {
+		setGalleryOld([...galleryOld.filter((item, i) => item != img)]);
+	}
 
 	const handleContactChange = (index, field, value) => {
 		const newContacts = [...contactMethods];
@@ -133,15 +242,15 @@ const PropertyForm = () => {
 
 	// Function to handle floor map images upload
 	const handleFloorMapUpload = ({ file }) => {
-		setFloorMap((prevFloorMap) => [...prevFloorMap, file]); // Append to floor map
+		setFloorMap(file);
 		message.success(`${file.name} added to Floor Map.`);
 	};
 
-	 const handleAmenityInputChange = (index, field, value) => {
-			const updatedAmenities = [...amenities];
-			updatedAmenities[index][field] = value;
-			setAmenities(updatedAmenities);
-		};
+	const handleAmenityInputChange = (index, field, value) => {
+		const updatedAmenities = [...amenities];
+		updatedAmenities[index][field] = value;
+		setAmenities(updatedAmenities);
+	};
 
 	// Function to handle distance input change (for value or unit)
 	const handleDistanceChange = (index, subField, value) => {
@@ -168,9 +277,9 @@ const PropertyForm = () => {
 	const handleSubmit = () => {
 		const data = {
 			images: {
-				gallery,
-				floorMap,
-				heroImg
+				gallery: [...galleryOld, ...gallery],
+				floorMap: floorMap ? floorMap : floorMapOld,
+				heroImg: heroImg ? heroImg : heroImgOld,
 			},
 			location: {
 				lat: latitude,
@@ -226,22 +335,12 @@ const PropertyForm = () => {
 			occupancy: occupancyStatus,
 		};
 
-		const options = {
-			initialFormData: new FormData(),
-			showLeafArrayIndexes: true,
-			includeNullValues: false,
-			// mapping: function (value) {
-			// 	if (typeof value === "boolean") {
-			// 		return +value ? "1" : "0";
-			// 	}
-			// 	return value;
-			// },
-		};
-
 		const formData = removeArrayIndicesFromImages(toFormData(data));
 
 		console.log("Form Data:", toFormData(data));
-		createProperty(formData);
+		
+		if (property) onSubmit(property._id, formData);
+		else onSubmit(formData);
 		// You can now send formData to your API or use it as needed
 	};
 
@@ -279,9 +378,7 @@ const PropertyForm = () => {
 							onChange={(value) => setOccupancyStatus(value)}
 						>
 							<Select.Option value="vacant">Vacant</Select.Option>
-							<Select.Option value="tenant">
-								Tenant
-							</Select.Option>
+							<Select.Option value="tenant">Tenant</Select.Option>
 							<Select.Option value="owned">Owned</Select.Option>
 						</Select>
 					</Form.Item>
@@ -534,7 +631,7 @@ const PropertyForm = () => {
 						<Col span={4}>
 							<InputNumber
 								placeholder="Distance Value"
-								value={amenity.distance.value}
+								value={amenity.distance && amenity.distance.value}
 								onChange={(value) =>
 									handleDistanceChange(index, "value", value)
 								}
@@ -544,7 +641,7 @@ const PropertyForm = () => {
 						</Col>
 						<Col span={4}>
 							<Select
-								value={amenity.distance.unit}
+								value={amenity.distance && amenity.distance.unit}
 								onChange={(value) =>
 									handleDistanceChange(index, "unit", value)
 								}
@@ -556,7 +653,6 @@ const PropertyForm = () => {
 								<Select.Option value="km">
 									Kilometers (km)
 								</Select.Option>
-								
 							</Select>
 						</Col>
 						<Col span={4}>
@@ -698,7 +794,10 @@ const PropertyForm = () => {
 
 			{/* Hero Image Upload */}
 			<Divider orientation="left">Images</Divider>
+
 			<Form.Item label="Hero Image">
+				{heroImgOld && <ImgBox removeImage={handleRemoveHeroImges} imgs={[heroImgOld]}> </ImgBox>}
+
 				<Upload
 					beforeUpload={() => false} // Prevent automatic upload
 					onChange={handleHeroImgUpload}
@@ -713,6 +812,7 @@ const PropertyForm = () => {
 
 			{/* Gallery Images Upload */}
 			<Form.Item label="Gallery Images">
+				{galleryOld.length > 0 && <ImgBox removeImage={handleRemoveGalleryImages} imgs={galleryOld}> </ImgBox>}
 				<Upload
 					beforeUpload={() => false} // Prevent automatic upload
 					onChange={handleGalleryUpload}
@@ -727,6 +827,7 @@ const PropertyForm = () => {
 
 			{/* Floor Map Images Upload */}
 			<Form.Item label="Floor Map Images">
+				{floorMapOld && <ImgBox removeImage={handleRemoveFloorMap} imgs={[floorMapOld]}> </ImgBox>}
 				<Upload
 					beforeUpload={() => false} // Prevent automatic upload
 					onChange={handleFloorMapUpload}
@@ -741,10 +842,7 @@ const PropertyForm = () => {
 
 			{/* Submit Button */}
 			<Form.Item>
-				<Button
-					type="primary"
-					onClick={handleSubmit}
-				>
+				<Button type="primary" onClick={handleSubmit}>
 					Submit
 				</Button>
 			</Form.Item>

@@ -19,3 +19,7 @@ export const createProperty = (payload) =>
 			"Content-Type": "multipart/form-data",
 		},
 	});
+
+export const viewProperty = (id) => api.get(`./property/${id}`);
+
+export const updateProperty = (id, payload) => api.patch('./property/' + id, payload);

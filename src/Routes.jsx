@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Property from "./pages/Property/Property";
 import ViewProperty from "./pages/Property/ViewProperty";
 import UploadProperty from "./pages/Property/UploadProperty";
+import EditProperty from "./pages/Property/EditProperty";
 
 const PageRoutes = () => {
 	const location = useLocation();
@@ -23,6 +24,9 @@ const PageRoutes = () => {
 				<Route
 					path="upload"
 					element={<UploadProperty></UploadProperty>}
+				></Route>
+				<Route path="edit/:id"
+					element={<EditProperty></EditProperty>}
 				></Route>
 			</Route>
 		</Routes>
