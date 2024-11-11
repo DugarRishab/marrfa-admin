@@ -1,17 +1,26 @@
 import { Button, Flex, Input, List, Typography } from "antd";
 import React, { useState, useEffect } from "react";
-import { viewProperties } from "../../services/api";
+import { deleteProperty, viewProperties } from "../../services/api";
 import { DeleteOutlined, EditOutlined, SlidersOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 const actionArray = (id) => {
+
+	const handleDelete = async () => {
+		try {
+			await deleteProperty(id);
+		}
+		catch (err) {
+			console.log(err);
+		}
+	}
 	return [
 		<Button key="edit-btn">
 			<Link to={`/property/edit/${id}`}>
 				<EditOutlined />
 			</Link>
 		</Button>,
-		<Button key="delete-btn" danger>
+		<Button key="delete-btn" onClick={handleDelete} danger>
 			<DeleteOutlined />
 		</Button>,
 	];
@@ -32,6 +41,7 @@ const ViewProperty = () => {
 	useEffect(() => {
 		getProperties();
 	}, []);
+
 	return (
 		<div className="sub-main">
 			<h2>View Properties</h2>

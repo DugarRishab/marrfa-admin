@@ -5,6 +5,9 @@ import Property from "./pages/Property/Property";
 import ViewProperty from "./pages/Property/ViewProperty";
 import UploadProperty from "./pages/Property/UploadProperty";
 import EditProperty from "./pages/Property/EditProperty";
+import User from "./pages/Users/User";
+import ViewUser from "./pages/Users/ViewUser";
+import EditUser from "./pages/Users/EditUser";
 
 const PageRoutes = () => {
 	const location = useLocation();
@@ -25,10 +28,16 @@ const PageRoutes = () => {
 					path="upload"
 					element={<UploadProperty></UploadProperty>}
 				></Route>
-				<Route path="edit/:id"
+				<Route
+					path="edit/:id"
 					element={<EditProperty></EditProperty>}
 				></Route>
 			</Route>
+			<Route exact path="/user" element={<User></User>}>
+				<Route path="view" element={<ViewUser></ViewUser>}></Route>
+				<Route path="edit/:id" element={<EditUser></EditUser>}></Route>
+			</Route>
+			{/* <Route exact path="/blog" element={}></Route> */}
 		</Routes>
 	);
 }

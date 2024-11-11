@@ -26,6 +26,7 @@ import { createProperty } from "../../services/api";
 import jsonToFormData from "../../utils/jsonToFormData";
 import { toFormData } from "axios";
 import removeArrayIndicesFromImages from "../../utils/removeArrayIndicesFromImages";
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -80,6 +81,8 @@ const ImgBox = ({ imgs, removeImage }) => {
 };
 
 const PropertyForm = ({ property, onSubmit }) => {
+
+	const navigate = useNavigate();
 	// State variables for basic details
 	const [propertyName, setPropertyName] = useState(property?.name || "");
 	const [propertyType, setPropertyType] = useState(property?.type || "");
@@ -181,6 +184,10 @@ const PropertyForm = ({ property, onSubmit }) => {
 		property?.images?.floorMap
 	);
 
+	// state to store finance data
+	const [marrfex, setMarrfex] = useState();
+	const [yieldPercent, setYieldPercent] = useState();
+
 	const handleRemoveHeroImges = () => {
 		setHeroImgOld('');
 	}
@@ -274,7 +281,7 @@ const PropertyForm = ({ property, onSubmit }) => {
 	};
 
 	// Handler for form submission
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		const data = {
 			images: {
 				gallery: [...galleryOld, ...gallery],
@@ -291,8 +298,8 @@ const PropertyForm = ({ property, onSubmit }) => {
 				country,
 				amenities: amenities.map((amenity, index) => ({
 					distance: {
-						value: amenity.distanceValue,
-						unit: amenity.distanceUnit,
+						value: amenity.distance.value,
+						unit: amenity.distance.unit,
 					},
 					name: amenity.name,
 					// _id: amenity.id,
@@ -333,14 +340,32 @@ const PropertyForm = ({ property, onSubmit }) => {
 			name: propertyName,
 			type: propertyType,
 			occupancy: occupancyStatus,
+			finance: {
+				yield: yieldPercent,
+				marrfex: marrfex
+			}
 		};
 
 		const formData = removeArrayIndicesFromImages(toFormData(data));
 
 		console.log("Form Data:", toFormData(data));
 		
-		if (property) onSubmit(property._id, formData);
-		else onSubmit(formData);
+		try {
+			if (property) {
+				await onSubmit(property._id, formData);
+				message.success("Property Added");
+			}
+			else {
+				await onSubmit(formData);
+				message.success("Property Updated");
+			}
+
+			navigate('/property/view');
+		}
+		catch (err) {
+			message.error(err.response.data.message || err.message);
+		}
+		
 		// You can now send formData to your API or use it as needed
 	};
 
@@ -631,7 +656,9 @@ const PropertyForm = ({ property, onSubmit }) => {
 						<Col span={4}>
 							<InputNumber
 								placeholder="Distance Value"
-								value={amenity.distance && amenity.distance.value}
+								value={
+									amenity.distance && amenity.distance.value
+								}
 								onChange={(value) =>
 									handleDistanceChange(index, "value", value)
 								}
@@ -641,7 +668,9 @@ const PropertyForm = ({ property, onSubmit }) => {
 						</Col>
 						<Col span={4}>
 							<Select
-								value={amenity.distance && amenity.distance.unit}
+								value={
+									amenity.distance && amenity.distance.unit
+								}
 								onChange={(value) =>
 									handleDistanceChange(index, "unit", value)
 								}
@@ -792,11 +821,42 @@ const PropertyForm = ({ property, onSubmit }) => {
 				</Col>
 			</Row>
 
+			<Divider orientation="left">Finance</Divider>
+			<Row gutter={16}>
+				<Col span={3}>
+					<Form.Item label="Yield (%)">
+						<InputNumber
+							value={yieldPercent}
+							onChange={(value) => setYieldPercent(value)}
+							placeholder="0-100"
+							// style={{ width: "100%" }}
+						/>
+					</Form.Item>
+				</Col>
+				<Col span={3}>
+					<Form.Item label="Marrfex">
+						<InputNumber
+							value={marrfex}
+							onChange={(value) => setMarrfex(value)}
+							placeholder="1, 2, 3, 4, 5"
+							// style={{ width: "100%" }}
+						/>
+					</Form.Item>
+				</Col>
+			</Row>
+
 			{/* Hero Image Upload */}
 			<Divider orientation="left">Images</Divider>
 
 			<Form.Item label="Hero Image">
-				{heroImgOld && <ImgBox removeImage={handleRemoveHeroImges} imgs={[heroImgOld]}> </ImgBox>}
+				{heroImgOld && (
+					<ImgBox
+						removeImage={handleRemoveHeroImges}
+						imgs={[heroImgOld]}
+					>
+						{" "}
+					</ImgBox>
+				)}
 
 				<Upload
 					beforeUpload={() => false} // Prevent automatic upload
@@ -812,7 +872,14 @@ const PropertyForm = ({ property, onSubmit }) => {
 
 			{/* Gallery Images Upload */}
 			<Form.Item label="Gallery Images">
-				{galleryOld.length > 0 && <ImgBox removeImage={handleRemoveGalleryImages} imgs={galleryOld}> </ImgBox>}
+				{galleryOld.length > 0 && (
+					<ImgBox
+						removeImage={handleRemoveGalleryImages}
+						imgs={galleryOld}
+					>
+						{" "}
+					</ImgBox>
+				)}
 				<Upload
 					beforeUpload={() => false} // Prevent automatic upload
 					onChange={handleGalleryUpload}
@@ -827,12 +894,20 @@ const PropertyForm = ({ property, onSubmit }) => {
 
 			{/* Floor Map Images Upload */}
 			<Form.Item label="Floor Map Images">
-				{floorMapOld && <ImgBox removeImage={handleRemoveFloorMap} imgs={[floorMapOld]}> </ImgBox>}
+				{floorMapOld && (
+					<ImgBox
+						removeImage={handleRemoveFloorMap}
+						imgs={[floorMapOld]}
+					>
+						{" "}
+					</ImgBox>
+				)}
 				<Upload
 					beforeUpload={() => false} // Prevent automatic upload
 					onChange={handleFloorMapUpload}
 					accept="image/*"
 					multiple // Allow multiple images
+					listType="image"
 				>
 					<Button icon={<UploadOutlined />}>
 						Click to Upload Floor Map Images

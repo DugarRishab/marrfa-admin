@@ -22,10 +22,7 @@ const Menubar = () => {
 					key: "deal-of-month",
 					label: "Deal of the Month",
 				},
-				{
-					key: "marrfa-choice",
-					label: "Marrfa's Choice",
-				},
+				
 			],
 		},
 		{
@@ -36,14 +33,10 @@ const Menubar = () => {
 					key: "view",
 					label: "View All Users",
 				},
-				{
-					key: "add",
-					label: "Add Users",
-				},
-				{
-					key: "admin",
-					label: "View Admin List",
-				},
+				// {
+				// 	key: "admin",
+				// 	label: "View Admin List",
+				// },
 			],
 		},
 		{
