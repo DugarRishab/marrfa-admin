@@ -80,6 +80,33 @@ const ImgBox = ({ imgs, removeImage }) => {
 	
 };
 
+const completionDateOptions = [
+	"Q1 2025",
+	"Q2 2025",
+	"Q3 2025",
+	"Q4 2025",
+	"Q1 2026",
+	"Q2 2026",
+	"Q3 2026",
+	"Q4 2026",
+	"Q1 2027",
+	"Q2 2027",
+	"Q3 2027",
+	"Q4 2027",
+	"Q1 2028",
+	"Q2 2028",
+	"Q3 2028",
+	"Q4 2028",
+	"Q1 2029",
+	"Q2 2029",
+	"Q3 2029",
+	"Q4 2029",
+	"Q1 2030",
+	"Q2 2030",
+	"Q3 2030",
+	"Q4 2030",
+];
+
 const PropertyForm = ({ property, onSubmit }) => {
 
 	const navigate = useNavigate();
@@ -167,6 +194,7 @@ const PropertyForm = ({ property, onSubmit }) => {
 
 	// State variables for metadata
 	const [mlsNumber, setMlsNumber] = useState(property?.metadata?.mls || null);
+	const [completionDate, setCompletionDate] = useState(property?.metadata?.completionDate || "");
 
 	// State to store uploaded files
 	const [heroImg, setHeroImg] = useState(null);
@@ -185,8 +213,8 @@ const PropertyForm = ({ property, onSubmit }) => {
 	);
 
 	// state to store finance data
-	const [marrfex, setMarrfex] = useState();
-	const [yieldPercent, setYieldPercent] = useState();
+	const [marrfex, setMarrfex] = useState(property?.finance?.marrfex || null);
+	const [yieldPercent, setYieldPercent] = useState(property?.finance?.yield || null);
 
 	const handleRemoveHeroImges = () => {
 		setHeroImgOld('');
@@ -336,6 +364,7 @@ const PropertyForm = ({ property, onSubmit }) => {
 			},
 			metadata: {
 				mls: mlsNumber,
+				completionDate
 			},
 			name: propertyName,
 			type: propertyType,
@@ -809,7 +838,7 @@ const PropertyForm = ({ property, onSubmit }) => {
 
 			<Divider orientation="left">Metadata</Divider>
 			<Row gutter={16}>
-				<Col span={12}>
+				<Col span={4}>
 					<Form.Item label="MLS Number">
 						<InputNumber
 							value={mlsNumber}
@@ -817,6 +846,21 @@ const PropertyForm = ({ property, onSubmit }) => {
 							placeholder="MLS Number"
 							style={{ width: "100%" }}
 						/>
+					</Form.Item>
+				</Col>
+				<Col span={4}>
+					<Form.Item label="Completion Date">
+						<Select
+							value={completionDate}
+							onChange={(value) => setCompletionDate(value)}
+						>
+							{
+								completionDateOptions.map((val, id) => (
+									<Select.Option key={id} value={val}>{ val }</Select.Option>
+								))
+							}
+							
+						</Select>
 					</Form.Item>
 				</Col>
 			</Row>
